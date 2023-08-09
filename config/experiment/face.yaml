@@ -1,0 +1,38 @@
+# @package _global_
+
+exp_name: "face"
+
+lr: 1e-4
+batch_size: 10
+val_every: 2500
+n_workers: 0
+
+l_linear_mi: 1.0
+l_bad_adapted_grad: 0.2
+l_good_base: 1.0
+
+max_adapt_steps: 16
+batch_size_search_space: [5,10,15]
+train_lr_search_range: [1e-4, 1e-2]
+eval_lr_search_range: [1e-5, 1e-2]
+hyperopt_max_evals: 50
+post_hyperopt_eval_runs: 15
+
+data:
+  bad_key: "Male"
+  good_key: "Smiling"
+
+mi_loss_predictor:
+  width: 128
+  input_dim: 368
+
+adversary:
+  early_stop: True
+  eval_steps: 100
+  n_examples: 100
+  ft_steps_range: [100, 1000, 1] # min, max, interval
+
+image_model:
+  hf_name: "facebook/regnet-y-002"
+  tv_name: null
+  tv_pretrained: True

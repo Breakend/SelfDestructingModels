@@ -1,0 +1,13 @@
+torch
+torchvision
+pillow
+numpy
+datasets
+# git+https://github.com/huggingface/transformers # transformers
+transformers
+wandb
+wheel
+hyperopt
+torch_maml
+hydra-core
+git+https://github.com/eric-mitchell/higher_selfdestruct@c473e03

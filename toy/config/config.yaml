@@ -1,0 +1,31 @@
+batch_size: 10
+lr: 1e-4
+predictor_lr: 1e-4
+predictor_train_steps: 1
+l_bad_adapted: 0.0
+l_good_base: 1.0
+l_bad_base: 0.0
+l_bad_base_grad: 0.0
+l_bad_adapted_grad: 0.0
+l_distill: 0.0
+l_mi: 0.0
+train_steps: 75000
+val_steps: 50
+val_every: 1000
+device: cuda
+debug: False
+max_adapt_steps: 20
+grad_clip: 10.0
+no_eval: False
+seed: 0
+confusion: False
+square_grad: False
+rgd: False
+rgd_cosine: False
+rep_base_only: False
+
+adversary:
+  early_stop: False
+  eval_period: 50
+  n_examples: -1
+  eval_steps: 100

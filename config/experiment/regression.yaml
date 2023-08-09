@@ -1,0 +1,22 @@
+# @package _global_
+
+exp_name: "regression"
+
+lr: 1e-4
+batch_size: 100
+
+l_linear_mi: 1.0
+l_bad_adapted_grad: 1.0
+l_good_base: 1.0
+
+max_adapt_steps: 16
+eval_lr_search_range: [1e-4, 1e-2]
+batch_size_search_space: [32, 64, 128]
+
+data:
+  bad_key: "ybad"
+  good_key: "ygood"
+
+mi_loss_predictor:
+  width: 50
+

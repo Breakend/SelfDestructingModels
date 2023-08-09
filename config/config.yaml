@@ -1,0 +1,113 @@
+defaults:
+  - _self_
+  - experiment: ??? # makes experiment a requirement
+
+batch_size: 10
+lr: 1e-5
+hyperparams_lr: 1e-4
+grad_clip: 10.0
+no_eval: False
+seed: 0
+train_steps: 50000
+val_steps: 50
+val_every: 2500
+device: cuda
+debug: False
+skip_initial_eval: False
+deterministic: False
+detect_anomaly: False
+dry_run: False
+accumulate_steps: 1
+n_workers: null
+batch_hash: null
+archive: null
+
+bios:
+  remove_pronouns: True
+  degender: False
+
+# By default, all losses off. Turn on desired losses in experiment config file
+l_bad_adapted: 0.0
+l_good_base: 0.0
+l_bad_base: 0.0
+l_good_adapted: 0.0
+l_bad_base_grad: 0.0
+l_good_adapted_bad : 0.0
+l_mi: 0.0
+l_bad_adapted_grad: 0.0
+l_mlm: 0.0
+l_linear_mi: 0.0
+
+# Blocking params
+rgd: False
+max_adapt_steps: 5
+square_grad: False
+inner_loop_update_every_step: True
+use_inner_loop_schedule: False
+inner_loop_schedule: 100 # -1 is no schedule, number indicates how many steps to wait before increasing inner loop by one step
+inner_loop_lag: 2 # how many steps to create the inner loop step sampling window
+bad_adapt_mode: "maml" # can also be "torch_maml" or "maml"
+maml_max_grad_norm: 1e2
+inner_loop_learn_adv_head: True
+inner_loop_learn_lr: True # Requires using this version of higher from this PR https://github.com/facebookresearch/higher/pull/131
+eval_random_head_reset: True
+eval_freeze_base: True
+inner_loop_freeze_base: False
+batch_size_search_space: [8, 16, 24]
+train_lr_search_range: [1e-4, 1e-2]
+eval_lr_search_range: [1e-5, 1e-2]
+eval_optimizer_search_space: ["adam"]
+predictor_train_steps: 1
+hyperopt_max_evals: 50
+post_hyperopt_eval_runs: 15
+minimize_all_inner_grad_norms: True
+param_noise: 0.0
+no_mi: False
+
+# Configurations for evaluation only
+eval_only: False
+eval_only_bad: False
+eval_network_type: "pretrained" # Can be "pretrained", "random", "good-tuned", "loaded". If loaded please also provide cfg.eval_model_path
+aux_eval_tasks: []
+eval_hyperopt_rounds: 20
+
+mi_loss_predictor_opt:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 1e-4
+
+adversary:
+  early_stop: False
+  eval_period: 50
+  n_examples: 100
+  n_examples_inner: -1
+  eval_steps: 100
+  ft_steps_range: [100, 1001, 100]
+  hparam_early_stop_trials: 15 # default, don't early stop ${hyperopt_max_evals}
+
+mlm:
+  vocab_size: 30522
+  dataset_name: "wikitext"
+  subset_name: "wikitext-2-raw-v1"
+  max_train_samples: 100000
+  mlm_probability: 0.4
+  distill: True
+
+mi_loss_predictor:
+  _target_: model.StepwiseMLP
+  n_out: 2
+  n_steps: ${max_adapt_steps}
+  n_opts: 2 # one for whether or not we freeze, one for whether or not we reset the head
+  width: ???
+  input_dim: null
+  linear: True
+  separate: True
+
+hydra:
+  job:
+    chdir: True
+  run:
+    dir: ./outputs/${batch_hash}/${exp_name}__${l_bad_adapted}__${l_linear_mi}__${l_bad_adapted_grad}__${max_adapt_steps}__${now:%Y-%m-%d_%H-%M-%S}__${uuid:}
+  sweep:
+    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S-%f}
+    subdir: ${hydra.job.num}

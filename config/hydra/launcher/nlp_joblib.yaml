@@ -1,0 +1,3 @@
+# @package hydra.launcher
+_target_: hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher
+n_jobs: 5
